@@ -1,16 +1,30 @@
-export const App = () => {
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
-  );
-};
+import { Component } from 'react';
+
+export class App extends Component {
+  state = {
+    contacts: [],
+    filter: '',
+  };
+
+  getNewContact = newContact => {
+    const alredyInContacts = this.state.some(
+      contact => contact.name === newContact.name
+    );
+
+    if (alredyInContacts) {
+      return alert(`${newContact.name} is already in contact.`);
+    }
+
+    this.setState(prevState => ({
+      contacts: [...prevState, newContact],
+    }));
+  };
+
+  render() {
+    return (
+      <div>
+        <h1>Phonebook</h1>
+      </div>
+    );
+  }
+}
