@@ -35,9 +35,10 @@ export class App extends Component {
   //   }));
   // };
   addContact = contactData => {
-    const { name: newName } = contactData;
+    const { name: newName, form: newForm } = contactData;
     if (this.isInContacts(newName)) {
       Notiflix.Notify.warning(`${newName} is already in contacts.`);
+      return newForm;
     } else {
       Notiflix.Notify.success('New contact succesfully added!');
     }

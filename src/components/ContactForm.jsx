@@ -17,8 +17,13 @@ export class ContactForm extends Component {
 
   onSubmitHandler = event => {
     event.preventDefault();
+    const form = event.target;
     const { name, number } = this.state;
-    this.props.onSubmit({ name: name.trim(), number: number.trim() });
+    this.props.onSubmit({
+      name: name.trim(),
+      number: number.trim(),
+      form: form.reset(),
+    });
     this.setState({ name: '', number: '' });
   };
 
