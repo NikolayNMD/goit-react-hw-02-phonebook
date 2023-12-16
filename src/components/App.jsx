@@ -15,8 +15,8 @@ export class App extends Component {
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
     filter: '',
-    name: '',
-    number: '',
+    // name: '',
+    // number: '',
   };
 
   nanoid = nanoid();
@@ -34,37 +34,29 @@ export class App extends Component {
   //     contacts: [...prevState, newContact],
   //   }));
   // };
-  handleSubmit = e => {
-    e.preventDefault();
-    const form = e.target;
-    const {
-      name: { value: name },
-      number: { value: number },
-    } = form.elements;
-
-    const check = this.checkIfContactExist(name);
-
-    if (!check) {
-      const newContact = {
-        id: nanoid,
-        name,
-        number,
-      };
-
-      this.setState(prevState => ({
-        contacts: [...prevState.contacts, newContact],
-      }));
-      Notiflix.Notify.success('New contact succesfully added!');
-      form.reset();
+  addContact = contactData => {
+    const { name: newName } = contactData;
+    if (this.isInContacts(newName)) {
+      Notiflix.Notify.warning(`${newName} is already in contacts.`);
     } else {
-      Notiflix.Notify.warning(`${name} is already in contacts.`);
+      Notiflix.Notify.success('New contact succesfully added!');
     }
+
+    this.setState(prevState => {
+      const contact = { id: nanoid(), ...contactData };
+
+      return {
+        contacts: [contact, ...prevState.contacts],
+      };
+    });
   };
 
-  checkIfContactExist = name => {
+  isInContacts = newName => {
     const { contacts } = this.state;
-    return contacts.find(
-      contact => contact.name.toLowerCase() === name.toLowerCase()
+    const newNameToLowerCase = newName.toLowerCase();
+
+    return contacts.some(
+      ({ name }) => name.toLowerCase() === newNameToLowerCase
     );
   };
 
@@ -94,7 +86,7 @@ export class App extends Component {
       <Wrapper>
         <Container>
           <h1 style={{ textAlign: 'center', color: 'white' }}>Phonebook</h1>
-          <ContactForm onSubmit={this.handleSubmit} />
+          <ContactForm onSubmit={this.addContact} />
           <h2 style={{ textAlign: 'center', color: 'white' }}>Contacts</h2>
           <Filter onChange={this.handleFilterChange} filter={filter} />
           <ContactList onClick={this.handleDelete} contacts={filterSearch} />

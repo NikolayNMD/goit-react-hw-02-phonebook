@@ -1,32 +1,60 @@
+import React, { Component } from 'react';
 import styled from 'styled-components';
+import { nanoid } from 'nanoid';
 
-export const ContactForm = ({ onSubmit }) => {
-  return (
-    <form onSubmit={onSubmit}>
-      <Label>
-        Name
-        <input
-          type="text"
-          name="name"
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          required
-          placeholder="Enter name"
-        />
-        Number
-        <input
-          type="tel"
-          name="number"
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-          required
-          placeholder="Enter phone number"
-        />
-        <Button type="submit">Add contact</Button>
-      </Label>
-    </form>
-  );
-};
+export class ContactForm extends Component {
+  state = {
+    name: '',
+    number: '',
+  };
+  nameInputId = nanoid();
+  telInputId = nanoid();
+
+  inputHandler = event => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  };
+
+  onSubmitHandler = event => {
+    event.preventDefault();
+    const { name, number } = this.state;
+    this.props.onSubmit({ name: name.trim(), number: number.trim() });
+    this.setState({ name: '', number: '' });
+  };
+
+  render() {
+    const { name, number } = this.state;
+    return (
+      <form onSubmit={this.onSubmitHandler}>
+        <Label htmlFor={this.nameInputId && this.telInputId}>
+          Name
+          <input
+            id={this.nameInputId}
+            placeholder="Enter name"
+            type="text"
+            name="name"
+            value={name}
+            onChange={this.inputHandler}
+            required
+          />
+          Number
+          <input
+            id={this.telInputId}
+            placeholder="Enter phone number"
+            type="tel"
+            name="number"
+            value={number}
+            onChange={this.inputHandler}
+            required
+          />
+          <Button type="submit" disabled={!(name && number)}>
+            Add contact
+          </Button>
+        </Label>
+      </form>
+    );
+  }
+}
 
 const Label = styled.label`
   display: flex;
@@ -44,10 +72,4 @@ const Button = styled.button`
   border: 1px solid black;
   border-radius: 2px;
   background-color: lavender;
-
-  &:hover {
-    cursor: pointer;
-    background-color: blueviolet;
-    color: white;
-  }
 `;
